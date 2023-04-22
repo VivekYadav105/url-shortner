@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const errorHandler = require('../middleware/errorMiddleWare')
+
 const shortUrlSchema = mongoose.Schema({
     url:{type:String,required:true},
     originalUrl:{type:String,required:true},
@@ -12,7 +13,7 @@ shortUrlSchema.pre('save',function(next){
         next();
     }
     catch(err){
-        next(errorHandle(err));
+        next(errorHandler(err));
     }
 
 })

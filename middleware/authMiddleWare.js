@@ -13,10 +13,10 @@ const authUser = async(req,res,next)=>{
             console.log(decoded)
             req.user = await getOrSetCachedInfo(decoded.id,()=>User.findById(decoded.id).select("-password"))
             next();
-        } catch (error) {
-            console.log(error)
+        } catch (err) {
+            if(err.message=="jwt expired") err.message = "session timed-out.\nplease login again."
             res.status(401);
-            next(error)
+            next(err)
         }
     }
 }

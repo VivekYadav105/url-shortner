@@ -9,7 +9,7 @@ const cors = require('cors')
 const authUser = require('./middleware/authMiddleWare') 
 const errorHandler = require('./middleware/errorMiddleWare')
 const { signIn, signOut, signUp } = require('./controllers/userController')
-const { generateUrl, getUrl } = require('./controllers/shortUrlController')
+const { generateUrl, fetchUrl } = require('./controllers/shortUrlController')
 const {client} = require('./redis-config')
 
 const app = express()
@@ -24,7 +24,7 @@ app.route('/user/login').post(signIn);
 app.route('/user/signup').post(signUp);
 app.route('/user/signOut').get(authUser,signOut);
 app.route('/shortUrl/generate').post(authUser,generateUrl);
-app.route('/:url').get(authUser,getUrl)
+app.route('/:url').post(authUser,fetchUrl)
 
 app.use(errorHandler)
 

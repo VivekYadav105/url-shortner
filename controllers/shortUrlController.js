@@ -6,10 +6,12 @@ const {getOrSetCachedInfo, changeCachedInfo} = require("../redis-config")
 module.exports.generateUrl = async(req,res,next)=>{
     try{
         const {originalUrl} = req.body
+
         if(!originalUrl) {
             res.status(400)
             throw new Error("original url is required")
         }
+
         if(!originalUrl) return res.sendStatus(400).json({message:"the url field is blank"})
 
         const prefix = req.get('origin')||req.get('host');
@@ -40,20 +42,29 @@ module.exports.generateUrl = async(req,res,next)=>{
     }
 }
 
-module.exports.getUrl = async(req,res,next)=>{
+module.exports.fetchUrl = async(req,res,next)=>{
     try{
-        let url = req.get('origin')||req.get('host')+"/"+req.params.url
+        console.log("hello")
+        let url = req.get('origin')||req.get('host')+"/"+req.params.url;
+        const regex = /^specific_string_pattern[e][A-Za-z0-9]{10}[0-9]{13}$/
         console.log(url)
-        const urlObject = await ShortUrl.findOne({url:url})
+        if(!regex.test(url)){
+            res.status(400);
+            throw new Error("Given url is invalid");
+        } 
+        const urlObject = await getOrSetCachedInfo(url,async()=>await ShortUrl.findOne({url:url}),{set:true,setName:"urls"})
         console.log(urlObject)
         if(!urlObject || urlObject=={}) {
-            res.status(400)
-            throw new Error("given url is Invalid")
+            res.status(404)
+            throw new Error("No url is found with the given url")
         }
-        res.redirect(urlObject.originalUrl); 
+        return res.Status(200).json({
+            success:true,
+            message:"url found successfully",
+            data:urlObject
+        })
     }
     catch(err){
-        if(res.status==200) res.status(500)
         next(err)
     }
 }
