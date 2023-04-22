@@ -24,7 +24,6 @@ userSchema.methods.validatePassword = ()=>{
 userSchema.pre('save',function(next){
     const user = this;
         try{
-            // if(!user.validatePassword(user.password)) throw new Error("user password must contain atleast one uppercase\none lowercase and one number")
             bcrypt.genSalt(process.env.SALT_FACTOR,function(err,salt){
                 if(err) return next(err)
                 bcrypt.hash(user.password, salt, function(err, hash) {
@@ -41,7 +40,7 @@ userSchema.pre('save',function(next){
     }
 )
 
-userSchema.pre('update',async function(next){
+userSchema.pre('save',function(next){
     const user = this;
     console.log(this)
     if(user.isModified('name')){
