@@ -1,23 +1,30 @@
-const redis = require('redis')
-const client = redis.createClient({
-    url:process.env.REDIS_URI
+const Redis = require('ioredis')
+const client = new Redis(process.env.REDIS_URI)
+
+client.on("error", function(error) {
+   console.error(error);
+   // I report it onto a logging service like Sentry. 
+});
+
+client.on("connect",(err)=>{
+    console.log("connected to database successfully.")
 })
 
-function getOrSetCachedInfo(key,callback,options={}){
-    console.log("hello")
+function getOrSetCachedInfo(key,callback,set=false){
+    
     return new Promise(async (resolve,reject)=>{
         try{
             let data;
             if(!key || !callback) throw new Error("a call back and a key is required.")
             
-            if(options.set) data = await client.hGet(options.setName,JSON.stringify(key));
+            if(set) data = await client.hget(setName,JSON.stringify(key));
             else data = await client.get(JSON.stringify(key))
 
             if(data) return resolve(JSON.parse(data));
             data = await callback();
 
-            if(options.set) await client.hSet(options.setName,JSON.stringify(data));
-            else await client.setEx(JSON.stringify(key),3600,JSON.stringify(data))
+            if(set) await client.hset(setName,JSON.stringify(key),JSON.stringify(data),'EX',4800);
+            else await client.set(JSON.stringify(key),JSON.stringify(data), 'EX', 3600);
                 
             return resolve(data) 
         }
@@ -25,7 +32,6 @@ function getOrSetCachedInfo(key,callback,options={}){
             console.log(err)
             return reject(err)
         }
-
     })
 }
 
@@ -41,7 +47,7 @@ function changeCachedInfo(key,callback){
             data = JSON.parse(data)
             const ttl = await client.ttl(JSON.stringify(key))
             data = await callback()
-            await client.setEx(JSON.stringify(key),ttl,JSON.stringify(data));
+            await client.set(JSON.stringify(key),JSON.stringify(data), 'EX', ttl);
             return resolve(data);
         }
         catch(err){

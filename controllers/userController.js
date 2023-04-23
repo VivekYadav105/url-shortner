@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const User = require('../model/user');
 const bcrypt = require('bcryptjs');
-const {deleteCachedInfo,getOrSetCachedInfo, client} = require('../redis-config')
+const {deleteCachedInfo,getOrSetCachedInfo, client} = require('../redis-config');
+const { validateEmail } = require('../utils/validator');
 
 module.exports.signIn = async(req,res,next)=>{
     try{
@@ -10,7 +11,14 @@ module.exports.signIn = async(req,res,next)=>{
             res.status(400)
             throw new Error("Both username and password fields are mandatory!!!")
         }
-
+        if(email&&!validateEmail(email)){
+            res.status(400)
+            throw new Error("Given email is not valid")
+        }
+        if(name&&name.length<3){
+            res.status(400)
+            throw new Error("Given email is not valid")
+        }
         const user = await User.findOne({$or:[{name:name},{email:email}]});
         
         if(!user){
@@ -33,9 +41,9 @@ module.exports.signIn = async(req,res,next)=>{
 }
 
 module.exports.signOut = async(req,res,next)=>{
-    const data = await deleteCachedInfo(req.user._id);
+    const data = await deleteCachedInfo(req.session.user._id);
     delete req.headers.authorization;
-    delete req.user;
+    delete req.session;
     return res.status(200).json({
         success:true,
         message:"user logged out successfully",
@@ -53,6 +61,14 @@ module.exports.signUp = async(req,res,next)=>{
         if(confirmPassword&&confirmPassword!=password){
             res.status(400)
             throw new Error("passwords doesn't match")
+        }
+        if(!validateEmail(email)){
+            res.status(400)
+            throw new Error("Given email is not valid")
+        }
+        if(name.length<3){
+            res.status(400)
+            throw new Error("user name should contain atlease 3 chracter")
         }
         const existingUser = await User.findOne({$or:[{name:name},{email:email}]})
         if(existingUser){
