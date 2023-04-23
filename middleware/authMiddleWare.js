@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require('../model/user');
 const {getOrSetCachedInfo} = require('../redis-config')
 const authUser = async(req,res,next)=>{
+    
     try{
         if(req.headers.authorization&&req.headers.authorization.startsWith("Bearer")){
             try{

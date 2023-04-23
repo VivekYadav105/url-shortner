@@ -2,7 +2,7 @@ const shortid = require("shortid")
 const ShortUrl = require("../model/shortUrl")
 const User = require("../model/user")
 const {getOrSetCachedInfo, changeCachedInfo} = require("../redis-config")
-const { validateUrl } = require("../utils/validator")
+const { validateUrl, validateShortUrl } = require("../utils/validator")
 
 module.exports.generateUrl = async(req,res,next)=>{
     try{
@@ -59,9 +59,8 @@ module.exports.fetchUrl = async(req,res,next)=>{
         //     res.status(400);
         //     throw new Error("Given url is invalid");
         // }
-        const prefix = "http://localhost:5000"
-        const shortUrl_regex = new RegExp(`^${prefix}\/[a-zA-Z0-9_-]{7,14}\\d{13}$`) 
-        if(!shortUrl_regex.test(url)){
+        const prefix = req.get('origin')||req.get('host');
+        if(validateShortUrl(url.trim(),prefix)){
             res.status(400)
             throw new Error("Given Url is Invalid")
         } 
