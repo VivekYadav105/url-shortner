@@ -53,12 +53,6 @@ module.exports.fetchUrl = async(req,res,next)=>{
     try{
         console.log("hello")
         let url = req.get('origin')||req.get('host')+"/"+req.params.shortId;
-        // const regex = /^specific_string_pattern[e][A-Za-z0-9]{10}[0-9]{13}$/
-        // console.log(url)
-        // if(!regex.test(url)){
-        //     res.status(400);
-        //     throw new Error("Given url is invalid");
-        // }
         const prefix = req.get('origin')||req.get('host');
         if(validateShortUrl(url.trim(),prefix)){
             res.status(400)

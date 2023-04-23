@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs');
 const { changeCachedInfo } = require('../redis-config');
 const { validatePassword, validateEmail } = require('../utils/validator');
+const errorMiddleware = require('../middleware/errorMiddleWare');
 
 
 
@@ -38,7 +39,7 @@ userSchema.pre('save',function(next){
 
 userSchema.pre('save',function(next){
     const user = this;
-    console.log(this)
+
     if(user.isModified('name')){
         user.updatedAt = Date.now();
     }
@@ -56,7 +57,7 @@ userSchema.pre('save',function(next){
         }
         catch(err){
             console.log("inside catch block")
-            next(err)
+            next(errorMiddleware(err))
         }
     }
     next();

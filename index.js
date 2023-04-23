@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json())
 app.use(cors())
 app.use(morgan('dev'))
-// app.set('trust proxy',1)
+app.set('trust proxy',1)
 app.use(session(
     {
         store:new RedisStore({client:client}),
