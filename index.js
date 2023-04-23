@@ -37,7 +37,9 @@ app.use(session(
         }
     }
 ))
-
+app.route('/').get((req,res,next)=>{
+    res.send("hello world")
+})
 app.route('/user/login').post(signIn);
 app.route('/user/signup').post(signUp);
 app.route('/user/signOut').get(authUser,signOut);
