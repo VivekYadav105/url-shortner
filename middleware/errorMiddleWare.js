@@ -4,7 +4,7 @@ const errorMiddleware = (err,req,res,next)=>{
     const errStatus = res.statusCode || 500;
     const errMessage = err.message||"something went wrong";
     const errStack = process.env.NODE_ENV==="development"? err.stack : {}
-    res.status(errStatus).json({
+    return res.status(errStatus).json({
         success:false,
         status:errStatus,
         stack:errStack,
