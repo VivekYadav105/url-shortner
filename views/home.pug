@@ -5,5 +5,44 @@ html(lang="en")
         meta(http-equiv="X-UA-Compatible", content="IE=edge")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title Url shortner Api
-    body 
-        p This is Url shortner Api 
+        link(rel="preconnect",href="https://fonts.googleapis.com")
+        link(rel="preconnect",href="https://fonts.gstatic.com",crossorigin)
+        link(href="https://fonts.googleapis.com/css2?family=Bruno+Ace&display=swap",rel="stylesheet")
+        link(href="https://fonts.googleapis.com/css2?family=Bruno+Ace&family=Space+Mono&display=swap",rel="stylesheet")
+        style(type="text/css").
+            .btn.active {
+                border: 2px solid rgba(216, 62, 62, 0.997);
+                background-color: rgba(246, 36, 36, 0.574);
+                box-shadow: 5px 5px 0px 2.5px rgba(149, 40, 16, 0.588);
+                color: black;
+            }
+            .btn:hover {
+              background-color: rgba(0, 0, 255, 0.249);
+              color: white;
+              border: 2px solid rgba(0, 0, 255, 0.549);
+              box-shadow: 2px 2px 0px 1.5px rgba(26, 26, 42, 0.588) !important;
+            }
+            .btn {
+              width: 45px;
+              min-width: fit-content;
+              padding:0 .5rem ;
+              height: 45px;
+              margin:auto;
+              background-color: rgba(0, 0, 255, 0.538);
+              border: 2px solid transparent;
+              color: white;
+              transition: 0.3s;
+              box-shadow: 5px 5px 0px 2.5px rgba(31, 16, 149, 0.588);
+              font-family: "Space Mono", monospace !important;
+              letter-spacing: 1px;
+            }
+
+    body(style={"background-color":"black",color:"white","font-family":"'Bruno Ace', cursive"})
+        section(style={width:"95vw","justify-content":"center","margin":" 5rem auto"})
+            p(style={"text-align":"center"}) This is Url shortner Api 
+                br
+                br
+                button.btn view Documentation 
+            p(style={"text-align":"center"}) to use this api use this url 
+                code ec2-54-167-66-135.compute-1.amazonaws.com
+            div
