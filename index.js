@@ -24,6 +24,7 @@ app.use(bodyParser.json())
 app.use(cors())
 app.use(morgan('dev'))
 if(process.env.NODE_ENV == "production") app.set('trust proxy',1)
+app.set('view engine',"pug")
 app.use(session(
     {
         store:new RedisStore({client:client}),
@@ -38,7 +39,7 @@ app.use(session(
     }
 ))
 app.route('/').get((req,res,next)=>{
-    res.send("hello world")
+    res.sendFile("home.pug")
 })
 app.route('/user/login').post(signIn);
 app.route('/user/signup').post(signUp);
