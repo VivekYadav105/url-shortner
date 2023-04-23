@@ -39,7 +39,7 @@ app.use(session(
     }
 ))
 app.route('/').get((req,res,next)=>{
-    res.sendFile("home.pug")
+    res.render("home.pug")
 })
 app.route('/user/login').post(signIn);
 app.route('/user/signup').post(signUp);
